@@ -25,7 +25,7 @@ const ProdutosNavigator = () => {
         component={ProdutoFormScreen}
         options={({ navigation }) => ({
           presentation: 'modal',
-          title: 'Novo Produto',
+          title: 'Nova Despesa',
           headerLeft: () => (
             <Button onPress={() => navigation.goBack()}>Cancelar</Button>
           ),

@@ -64,7 +64,7 @@ const ProdutoFormScreen = () => {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      title: isEditing ? 'Editar Produto' : 'Novo Produto',
+      title: isEditing ? 'Editar Despesa' : 'Nova Despesa',
       headerRight: () => (
         <Button onPress={handleSave} loading={loading} disabled={loading}>
           Salvar
@@ -78,7 +78,7 @@ const ProdutoFormScreen = () => {
   return (
     <View style={styles.formContainer}>
       <TextInput
-        label="Nome do Produto"
+        label="Nome da Despesa"
         value={nome}
         onChangeText={setNome}
         mode="outlined"

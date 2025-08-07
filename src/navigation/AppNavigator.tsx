@@ -20,7 +20,7 @@ const AppNavigator = () => {
       <Tab.Screen
         name="ProdutosTab"
         component={ProdutosNavigator} // Use a pilha aqui
-        options={{ title: 'Produtos', headerShown: false }}
+        options={{ title: 'Despesas', headerShown: false }}
       />
       <Tab.Screen
         name="CategoriasTab" // O nome da aba

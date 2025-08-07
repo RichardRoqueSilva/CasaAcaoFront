@@ -58,7 +58,7 @@ const ProdutosScreen = () => {
   return (
     <View style={styles.container}>
       <Appbar.Header>
-        <Appbar.Content title="Produtos" />
+        <Appbar.Content title="Despesas" />
         <Appbar.Action icon="plus" onPress={() => navigation.navigate('ProdutoForm', {})} />
       </Appbar.Header>
 
