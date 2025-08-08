@@ -6,10 +6,12 @@ import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { AppDispatch, RootState } from '../redux/store';
 import { ListasStackParamList } from '../navigation/ListasNavigator';
 import { addItemNaLista, updateItemNaLista } from '../redux/slices/listasSlice';
+import SearchableSelectModal from '../components/SearchableSelectModal'; 
 
 type ItemFormRouteProp = RouteProp<ListasStackParamList, 'ItemForm'>;
 
 const ItemFormScreen = () => {
+  const [modalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   const navigation = useNavigation();
   const route = useRoute<ItemFormRouteProp>();
@@ -102,6 +104,10 @@ const ItemFormScreen = () => {
     });
   }, [navigation, selectedProdutoId, quantidade, preco, loading, isEditing]);
 
+  const produtosParaSelecao = produtos.map(p => ({
+    id: p.id,
+    label: p.nome,
+  }));
   const selectedProdutoNome = produtos.find(p => p.id === selectedProdutoId)?.nome || 'Selecione um produto';
 
   return (
@@ -115,39 +121,19 @@ const ItemFormScreen = () => {
           disabled
         />
       ) : (
-        // --- SELETOR DE PRODUTO CORRIGIDO ---
-        <Menu
-          visible={menuVisible}
-          onDismiss={() => setMenuVisible(false)}
-          anchor={
-            <TouchableWithoutFeedback onPress={() => setMenuVisible(true)}>
-              {/* Usamos um TextInput desabilitado para uma melhor aparência e área de toque */}
-              <View>
-                <TextInput
-                  label="Produto"
-                  value={selectedProdutoNome}
-                  mode="outlined"
-                  editable={false}
-                  right={<TextInput.Icon icon="menu-down" />}
-                  style={styles.input}
-                />
-              </View>
-            </TouchableWithoutFeedback>
-          }
-        >
-          <ScrollView style={{ maxHeight: 250 }}>
-            {produtos.map(p => (
-              <Menu.Item
-                key={p.id}
-                onPress={() => {
-                  setSelectedProdutoId(p.id);
-                  setMenuVisible(false);
-                }}
-                title={p.nome}
-              />
-            ))}
-          </ScrollView>
-        </Menu>
+        // --- 4. SUBSTITUIÇÃO DO <Menu> PELO NOVO SELETOR ---
+        <TouchableWithoutFeedback onPress={() => setModalVisible(true)}>
+          <View>
+            <TextInput
+              label="Produto"
+              value={selectedProdutoNome}
+              mode="outlined"
+              editable={false}
+              right={<TextInput.Icon icon="menu-down" />}
+              style={styles.input}
+            />
+          </View>
+        </TouchableWithoutFeedback>
       )}
 
       <TextInput
@@ -167,6 +153,21 @@ const ItemFormScreen = () => {
         style={styles.input}
       />
       {error ? <HelperText type="error" visible={!!error}>{error}</HelperText> : null}
+      
+      {/* --- 5. ADIÇÃO DO COMPONENTE MODAL À TELA --- */}
+      {/* Ele fica invisível até que 'modalVisible' seja true */}
+      <SearchableSelectModal
+        visible={modalVisible}
+        onDismiss={() => setModalVisible(false)}
+        title="Selecione uma Despesa"
+        items={produtosParaSelecao}
+        onSelect={(item) => {
+          // Precisamos garantir que o ID é um número antes de definir o estado
+          if (typeof item.id === 'number') {
+            setSelectedProdutoId(item.id);
+          }
+        }}
+      />
     </View>
   );
 };

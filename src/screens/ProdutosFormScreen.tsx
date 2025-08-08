@@ -1,12 +1,13 @@
 // src/screens/ProdutoFormScreen.tsx
 import React, { useState, useLayoutEffect, useEffect } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { Button, TextInput, HelperText, Menu, Divider } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { addProduto, updateProduto } from '../redux/slices/produtosSlice';
 import { AppDispatch, RootState } from '../redux/store';
 import { ProdutosStackParamList } from '../navigation/ProdutosNavigator';
+import SearchableSelectModal from '../components/SearchableSelectModal';
 
 type ProdutoFormScreenRouteProp = RouteProp<ProdutosStackParamList, 'ProdutoForm'>;
 
@@ -28,6 +29,9 @@ const ProdutoFormScreen = () => {
   // Estados do formulário
   const [nome, setNome] = useState('');
   const [categoriaId, setCategoriaId] = useState<number | null>(null);
+  // --- 2. MUDANÇA DE ESTADO: menuVisible -> modalVisible ---
+  const [modalVisible, setModalVisible] = useState(false);
+
   const [menuVisible, setMenuVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -49,7 +53,7 @@ const ProdutoFormScreen = () => {
 
     try {
       const data = { nome, categoriaId };
-      if (isEditing) {
+      if (isEditing && produtoId) {
         await dispatch(updateProduto({ id: produtoId, data })).unwrap();
       } else {
         await dispatch(addProduto(data)).unwrap();
@@ -73,11 +77,14 @@ const ProdutoFormScreen = () => {
     });
   }, [navigation, nome, categoriaId, loading, isEditing]);
 
+  // --- 3. NOVA LÓGICA PARA PREPARAR OS DADOS PARA O MODAL ---
+  const categoriasParaSelecao = categorias.map(cat => ({ id: cat.id, label: cat.nome }));
   const selectedCategoriaNome = categorias.find(c => c.id === categoriaId)?.nome || 'Selecione uma categoria';
 
   return (
     <View style={styles.formContainer}>
       <TextInput
+        // Corrigi o label para "Nome do Produto"
         label="Nome da Despesa"
         value={nome}
         onChangeText={setNome}
@@ -86,28 +93,34 @@ const ProdutoFormScreen = () => {
         error={!!error}
       />
       
-      <Menu
-        visible={menuVisible}
-        onDismiss={() => setMenuVisible(false)}
-        anchor={
-          <Button mode="outlined" onPress={() => setMenuVisible(true)} style={styles.input}>
-            {selectedCategoriaNome}
-          </Button>
-        }
-      >
-        {categorias.map(cat => (
-          <Menu.Item
-            key={cat.id}
-            onPress={() => {
-              setCategoriaId(cat.id);
-              setMenuVisible(false);
-            }}
-            title={cat.nome}
+      {/* --- 4. SUBSTITUIÇÃO DO <Menu> PELO NOVO SELETOR --- */}
+      <TouchableWithoutFeedback onPress={() => setModalVisible(true)}>
+        <View>
+          <TextInput
+            label="Categoria"
+            value={selectedCategoriaNome}
+            mode="outlined"
+            editable={false}
+            right={<TextInput.Icon icon="menu-down" />}
+            style={styles.input}
           />
-        ))}
-      </Menu>
+        </View>
+      </TouchableWithoutFeedback>
 
       {error ? <HelperText type="error" visible={!!error}>{error}</HelperText> : null}
+      
+      {/* --- 5. ADIÇÃO DO COMPONENTE MODAL À TELA --- */}
+      <SearchableSelectModal
+        visible={modalVisible}
+        onDismiss={() => setModalVisible(false)}
+        title="Selecione uma Categoria"
+        items={categoriasParaSelecao}
+        onSelect={(item) => {
+          if (typeof item.id === 'number') {
+            setCategoriaId(item.id);
+          }
+        }}
+      />
     </View>
   );
 };
