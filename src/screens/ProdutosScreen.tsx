@@ -11,6 +11,8 @@ import { fetchProdutos, deleteProduto } from '../redux/slices/produtosSlice';
 import DataContainer from '../components/DataContainer';
 import { ProdutosStackParamList } from '../navigation/ProdutosNavigator';
 
+import { colors } from '../styles/theme';
+
 type ProdutosScreenNavigationProp = NativeStackNavigationProp<ProdutosStackParamList, 'ProdutosList'>;
 
 const ProdutosScreen = () => {
@@ -56,8 +58,9 @@ const ProdutosScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Appbar.Header>
+    <View style={[styles.container, { backgroundColor: colors.despesasLight }]}>
+      {/* <<< 3. APLIQUE A COR ESCURA NO CABEÇALHO */}
+      <Appbar.Header style={{ backgroundColor: colors.despesasDark }}>
         <Appbar.Content title="Despesas" />
         <Appbar.Action icon="plus" onPress={() => navigation.navigate('ProdutoForm', {})} />
       </Appbar.Header>
@@ -106,7 +109,7 @@ const ProdutosScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' }
+  container: { flex: 1,}
 });
 
 export default ProdutosScreen;

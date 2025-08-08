@@ -8,6 +8,7 @@ import { AppDispatch, RootState } from '../redux/store';
 import { ListasStackParamList } from '../navigation/ListasNavigator';
 import { removeItemDaLista } from '../redux/slices/listasSlice';
 import { ItemListaResponseDTO } from '../types';
+import { colors } from '../styles/theme';
 
 type ListaDetailScreenNavigationProp = NativeStackNavigationProp<ListasStackParamList, 'ListaDetail'>;
 type ListaDetailScreenRouteProp = RouteProp<ListasStackParamList, 'ListaDetail'>;
@@ -116,7 +117,7 @@ const ListaDetailScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
+     <View style={[styles.container, { backgroundColor: colors.listasLight }]}>
       <FlatList
         data={listaOriginal.itens}
         renderItem={renderItem}
@@ -130,9 +131,10 @@ const ListaDetailScreen = () => {
           mode="contained" 
           icon="plus"
           style={styles.addButton}
+          buttonColor={colors.listasDark}
           onPress={() => navigation.navigate('ItemForm', { listaId })}
         >
-          Adicionar Item
+          Adicionar Despesa
         </Button>
       </View>
       <Portal>

@@ -10,6 +10,7 @@ import { fetchListas, deleteLista } from '../redux/slices/listasSlice';
 import DataContainer from '../components/DataContainer';
 import { ListasStackParamList } from '../navigation/ListasNavigator';
 import { ListaResponseDTO } from '../types';
+import { colors } from '../styles/theme';
 
 type ListasScreenNavigationProp = NativeStackNavigationProp<ListasStackParamList, 'ListasList'>;
 
@@ -97,8 +98,9 @@ const ListasScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Appbar.Header>
+    <View style={[styles.container, { backgroundColor: colors.listasLight }]}>
+      {/* <<< 3. APLIQUE A COR ESCURA NO CABEÇALHO */}
+      <Appbar.Header style={{ backgroundColor: colors.listasDark }}>
         <Appbar.Content title="Minhas Listas" />
         <Appbar.Action icon="plus" onPress={() => navigation.navigate('ListaForm', {})} />
       </Appbar.Header>
@@ -136,7 +138,7 @@ const ListasScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
+  container: { flex: 1,},
 });
 
 export default ListasScreen;

@@ -12,6 +12,8 @@ import { fetchCategorias, deleteCategoria } from '../redux/slices/categoriasSlic
 import DataContainer from '../components/DataContainer';
 import { CategoriasStackParamList } from '../navigation/CategoriasNavigator';
 
+import { colors } from '../styles/theme';
+
 type ListItemIconProps = { color: string; };
 type CategoriasScreenNavigationProp = NativeStackNavigationProp<CategoriasStackParamList, 'CategoriasList'>;
 
@@ -66,8 +68,9 @@ const CategoriasScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Appbar.Header>
+    <View style={[styles.container, { backgroundColor: colors.categoriasLight }]}>
+      {/* <<< 3. APLIQUE A COR ESCURA NO CABEÇALHO */}
+      <Appbar.Header style={{ backgroundColor: colors.categoriasDark }}>
         <Appbar.Content title="Categorias" />
         <Appbar.Action icon="plus" onPress={() => navigation.navigate('CategoriaForm', {})} />
       </Appbar.Header>
@@ -118,7 +121,7 @@ const CategoriasScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' }
+  container: { flex: 1,}
 });
 
 export default CategoriasScreen;

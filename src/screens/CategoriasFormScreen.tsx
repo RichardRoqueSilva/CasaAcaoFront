@@ -7,6 +7,8 @@ import { addCategoria, updateCategoria } from '../redux/slices/categoriasSlice';
 import { AppDispatch, RootState } from '../redux/store';
 import { CategoriasStackParamList } from '../navigation/CategoriasNavigator';
 
+import { colors } from '../styles/theme';
+
 // Definindo o tipo da rota para esta tela
 type CategoriaFormScreenRouteProp = RouteProp<CategoriasStackParamList, 'CategoriaForm'>;
 
@@ -76,7 +78,7 @@ const CategoriaFormScreen = () => {
   }, [navigation, nome, descricao, loading, isEditing]);
 
   return (
-    <View style={styles.formContainer}>
+    <View style={[styles.formContainer, { backgroundColor: colors.categoriasLight }]}>
       {/* ... O JSX do formulário continua o mesmo ... */}
       <TextInput label="Nome da Categoria" value={nome} onChangeText={setNome} mode="outlined" style={styles.input} error={!!error} />
       <TextInput label="Descrição (Opcional)" value={descricao} onChangeText={setDescricao} mode="outlined" style={styles.input} multiline numberOfLines={3} />

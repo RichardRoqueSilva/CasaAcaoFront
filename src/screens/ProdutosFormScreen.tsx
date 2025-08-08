@@ -8,6 +8,7 @@ import { addProduto, updateProduto } from '../redux/slices/produtosSlice';
 import { AppDispatch, RootState } from '../redux/store';
 import { ProdutosStackParamList } from '../navigation/ProdutosNavigator';
 import SearchableSelectModal from '../components/SearchableSelectModal';
+import { colors } from '../styles/theme';
 
 type ProdutoFormScreenRouteProp = RouteProp<ProdutosStackParamList, 'ProdutoForm'>;
 
@@ -82,7 +83,7 @@ const ProdutoFormScreen = () => {
   const selectedCategoriaNome = categorias.find(c => c.id === categoriaId)?.nome || 'Selecione uma categoria';
 
   return (
-    <View style={styles.formContainer}>
+    <View style={[styles.formContainer, { backgroundColor: colors.despesasLight }]}>
       <TextInput
         // Corrigi o label para "Nome do Produto"
         label="Nome da Despesa"
@@ -126,7 +127,7 @@ const ProdutoFormScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  formContainer: { flex: 1, padding: 16, backgroundColor: '#fff' },
+  formContainer: { flex: 1, padding: 16,},
   input: { marginBottom: 16 },
 });
 

@@ -8,6 +8,7 @@ import { AppDispatch, RootState } from '../redux/store';
 import { ListasStackParamList } from '../navigation/ListasNavigator';
 // ESTA IMPORTAÇÃO AGORA VAI FUNCIONAR CORRETAMENTE
 import { ListaRequestDTO } from '../types';
+import { colors } from '../styles/theme';
 
 type ListaFormScreenRouteProp = RouteProp<ListasStackParamList, 'ListaForm'>;
 

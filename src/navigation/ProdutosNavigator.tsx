@@ -1,9 +1,11 @@
 // src/navigation/ProdutosNavigator.tsx
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { Button } from 'react-native-paper';
+import { colors } from '../styles/theme'; // <<< IMPORTE O TEMA
+
 import ProdutosScreen from '../screens/ProdutosScreen';
 import ProdutoFormScreen from '../screens/ProdutosFormScreen';
-import { Button } from 'react-native-paper';
 
 export type ProdutosStackParamList = {
   ProdutosList: undefined;
@@ -14,21 +16,26 @@ const Stack = createNativeStackNavigator<ProdutosStackParamList>();
 
 const ProdutosNavigator = () => {
   return (
-    <Stack.Navigator>
-      <Stack.Screen
-        name="ProdutosList"
-        component={ProdutosScreen}
-        options={{ headerShown: false }}
-      />
+    // <<< APLIQUE AS OPÇÕES DE ESTILO AQUI
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: colors.despesasDark,
+        },
+        headerTintColor: colors.white,
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
+      }}
+    >
+      <Stack.Screen name="ProdutosList" component={ProdutosScreen} options={{ headerShown: false }} />
       <Stack.Screen
         name="ProdutoForm"
         component={ProdutoFormScreen}
         options={({ navigation }) => ({
           presentation: 'modal',
-          title: 'Nova Despesa',
-          headerLeft: () => (
-            <Button onPress={() => navigation.goBack()}>Cancelar</Button>
-          ),
+          title: 'Novo Produto',
+          headerLeft: () => <Button onPress={() => navigation.goBack()} textColor={colors.white}>Cancelar</Button>,
         })}
       />
     </Stack.Navigator>

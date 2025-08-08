@@ -7,6 +7,8 @@ import { AppDispatch, RootState } from '../redux/store';
 import { ListasStackParamList } from '../navigation/ListasNavigator';
 import { addItemNaLista, updateItemNaLista } from '../redux/slices/listasSlice';
 import SearchableSelectModal from '../components/SearchableSelectModal'; 
+import { colors } from '../styles/theme';
+import CustomHeader from '../components/CustomHeader';
 
 type ItemFormRouteProp = RouteProp<ListasStackParamList, 'ItemForm'>;
 
@@ -110,71 +112,92 @@ const ItemFormScreen = () => {
   }));
   const selectedProdutoNome = produtos.find(p => p.id === selectedProdutoId)?.nome || 'Selecione um produto';
 
-  return (
-    <View style={styles.container}>
-      {isEditing && itemExistente ? (
-        <TextInput
-          label="Produto"
-          value={itemExistente.produto.nome}
-          mode="outlined"
-          style={styles.input}
-          disabled
-        />
-      ) : (
-        // --- 4. SUBSTITUIÇÃO DO <Menu> PELO NOVO SELETOR ---
-        <TouchableWithoutFeedback onPress={() => setModalVisible(true)}>
-          <View>
-            <TextInput
-              label="Produto"
-              value={selectedProdutoNome}
-              mode="outlined"
-              editable={false}
-              right={<TextInput.Icon icon="menu-down" />}
-              style={styles.input}
-            />
-          </View>
-        </TouchableWithoutFeedback>
-      )}
-
-      <TextInput
-        label="Quantidade"
-        value={quantidade}
-        onChangeText={setQuantidade}
-        mode="outlined"
-        keyboardType="numeric"
-        style={styles.input}
+ return (
+    // O container principal agora não tem mais padding
+    <View style={[styles.container, { backgroundColor: colors.listasLight }]}>
+      {/* --- 2. ADIÇÃO DO CustomHeader --- */}
+      <CustomHeader
+        backgroundColor={colors.listasDark}
+        onCancel={() => navigation.goBack()}
+        title={isEditing ? 'Editar Item' : 'Adicionar Item'}
+        onSave={handleSave}
+        isSaveLoading={loading}
+        isSaveDisabled={loading}
       />
-      <TextInput
-        label="Preço Unitário (Ex: 12,50)"
-        value={preco}
-        onChangeText={setPreco}
-        mode="outlined"
-        keyboardType="decimal-pad"
-        style={styles.input}
-      />
-      {error ? <HelperText type="error" visible={!!error}>{error}</HelperText> : null}
       
-      {/* --- 5. ADIÇÃO DO COMPONENTE MODAL À TELA --- */}
-      {/* Ele fica invisível até que 'modalVisible' seja true */}
-      <SearchableSelectModal
-        visible={modalVisible}
-        onDismiss={() => setModalVisible(false)}
-        title="Selecione uma Despesa"
-        items={produtosParaSelecao}
-        onSelect={(item) => {
-          // Precisamos garantir que o ID é um número antes de definir o estado
-          if (typeof item.id === 'number') {
-            setSelectedProdutoId(item.id);
-          }
-        }}
-      />
+      {/* --- 3. NOVO CONTAINER PARA O CONTEÚDO DO FORMULÁRIO --- */}
+      <View style={styles.formContent}>
+        {isEditing && itemExistente ? (
+          <TextInput
+            label="Produto"
+            value={itemExistente.produto.nome}
+            mode="outlined"
+            style={styles.input}
+            disabled
+          />
+        ) : (
+          <TouchableWithoutFeedback onPress={() => setModalVisible(true)}>
+            <View>
+              <TextInput
+                label="Produto"
+                value={selectedProdutoNome}
+                mode="outlined"
+                editable={false}
+                right={<TextInput.Icon icon="menu-down" />}
+                style={styles.input}
+              />
+            </View>
+          </TouchableWithoutFeedback>
+        )}
+
+        <TextInput
+          label="Quantidade"
+          value={quantidade}
+          onChangeText={setQuantidade}
+          mode="outlined"
+          keyboardType="numeric"
+          style={styles.input}
+        />
+        <TextInput
+          label="Preço Unitário (Ex: 12,50)"
+          value={preco}
+          onChangeText={setPreco}
+          mode="outlined"
+          keyboardType="decimal-pad"
+          style={styles.input}
+        />
+        {error ? <HelperText type="error" visible={!!error}>{error}</HelperText> : null}
+        
+        <SearchableSelectModal
+          visible={modalVisible}
+          onDismiss={() => setModalVisible(false)}
+          // Corrigi o título para ser genérico
+          title="Selecione um Produto"
+          items={produtosParaSelecao}
+          onSelect={(item) => {
+            if (typeof item.id === 'number') {
+              setSelectedProdutoId(item.id);
+            }
+          }}
+        />
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, backgroundColor: '#fff' },
-  input: { marginBottom: 16 },
+  // O estilo do container principal mudou
+  container: {
+    flex: 1,
+  },
+  // Novo estilo para o conteúdo do formulário
+  formContent: {
+    flex: 1,
+    padding: 16,
+  },
+  input: {
+    marginBottom: 16,
+  },
 });
 
 export default ItemFormScreen;

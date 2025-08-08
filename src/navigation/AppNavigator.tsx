@@ -1,9 +1,9 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-
-// --- 1. ADICIONE ESTE IMPORT ---
-// Importamos a biblioteca de ícones que o Expo nos fornece.
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+
+// --- 1. IMPORTE NOSSO TEMA DE CORES ---
+import { colors } from '../styles/theme';
 
 // Nossos navegadores de pilha para cada aba
 import ListasNavigator from './ListasNavigator';
@@ -15,18 +15,35 @@ const Tab = createBottomTabNavigator();
 const AppNavigator = () => {
   return (
     <Tab.Navigator
-      screenOptions={{
-        headerShown: false, // Esconde o cabeçalho de todas as abas de uma vez
-      }}
-    >
-      {/* --- 2. MODIFIQUE CADA Tab.Screen --- */}
+      // --- 2. TRANSFORME screenOptions EM UMA FUNÇÃO ---
+      // Isso nos dá acesso ao objeto 'route' para cada aba.
+      screenOptions={({ route }) => ({
+        headerShown: false,
 
+        // --- 3. DEFINA A COR ATIVA DINAMICAMENTE ---
+        // Aqui está a mágica: escolhemos a cor com base no nome da rota.
+        tabBarActiveTintColor: (() => {
+          if (route.name === 'ListasTab') {
+            return colors.listasDark;
+          }
+          if (route.name === 'ProdutosTab') {
+            return colors.despesasDark;
+          }
+          if (route.name === 'CategoriasTab') {
+            return colors.categoriasDark;
+          }
+          return 'blue'; // Uma cor padrão como fallback
+        })(),
+
+        // (Opcional) Você também pode definir a cor inativa se quiser
+        // tabBarInactiveTintColor: 'gray',
+      })}
+    >
       <Tab.Screen
         name="ListasTab"
         component={ListasNavigator}
         options={{
           title: 'Listas',
-          // A propriedade tabBarIcon é uma função que retorna o componente do ícone
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="format-list-bulleted" color={color} size={size} />
           ),
@@ -36,7 +53,6 @@ const AppNavigator = () => {
         name="ProdutosTab"
         component={ProdutosNavigator}
         options={{
-          // Vou usar o nome "Despesas" que aparece na sua imagem
           title: 'Despesas',
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="package-variant-closed" color={color} size={size} />
